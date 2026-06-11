@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block body_class %}wc-pattern{% endblock %}
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<section class="wc-hero-glow relative min-h-[calc(100vh-12rem)]">
+    <div class="relative mx-auto flex max-w-6xl flex-col items-center px-4 pb-20 pt-12 text-center lg:pt-20">
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-wc-gold/30 bg-wc-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.25em] text-wc-gold-bright">
+            <span class="h-2 w-2 rounded-full bg-wc-red"></span>
+            <span class="h-2 w-2 rounded-full bg-wc-green"></span>
+            <span class="h-2 w-2 rounded-full bg-wc-blue"></span>
+            {{ request.state._("FIFA World Cup 2026") }}
+        </div>
+
+        <h1 class="font-display text-5xl font-extrabold uppercase leading-none tracking-tight sm:text-6xl lg:text-7xl">
+            <span class="block text-white">{{ request.state._("World Cup Pool 2026") }}</span>
+            <span class="triad-text mt-2 block text-4xl sm:text-5xl lg:text-6xl">{{ request.state._("Predict. Compete. Celebrate.") }}</span>
+        </h1>
+
+        <p class="mt-6 max-w-2xl text-lg text-wc-muted sm:text-xl">
+            {{ request.state._("Welcome to the betting pool for the 2026 FIFA World Cup.") }}
+        </p>
+
+        <div class="mt-10 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+            <a href="/signup" class="wc-btn-primary inline-flex min-h-12 items-center justify-center rounded-xl px-8 text-base font-bold">
+                {{ request.state._("Join the pool") }}
+            </a>
+            <a href="/login" class="wc-btn-outline inline-flex min-h-12 items-center justify-center rounded-xl px-8 text-base font-semibold">
+                {{ request.state._("Log in") }}
+            </a>
+        </div>
+
+        <div class="mt-16 grid w-full max-w-4xl gap-4 sm:grid-cols-3">
+            <article class="wc-card wc-card-gold rounded-2xl p-6 text-left">
+                <div class="mb-3 h-1 w-12 rounded-full bg-wc-red"></div>
+                <h2 class="font-display text-xl font-bold uppercase text-white">{{ request.state._("Pick every score") }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-wc-muted">
+                    {{ request.state._("Submit your predictions before kickoff and chase the perfect scoreline.") }}
+                </p>
+            </article>
+            <article class="wc-card wc-card-gold rounded-2xl p-6 text-left">
+                <div class="mb-3 h-1 w-12 rounded-full bg-wc-green"></div>
+                <h2 class="font-display text-xl font-bold uppercase text-white">{{ request.state._("Climb the table") }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-wc-muted">
+                    {{ request.state._("Earn points for exact scores and correct results. Track your rank live.") }}
+                </p>
+            </article>
+            <article class="wc-card wc-card-gold rounded-2xl p-6 text-left">
+                <div class="mb-3 h-1 w-12 rounded-full bg-wc-blue"></div>
+                <h2 class="font-display text-xl font-bold uppercase text-white">{{ request.state._("Play with friends") }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-wc-muted">
+                    {{ request.state._("A private bolão built for your crew across Brazil, the USA, and beyond.") }}
+                </p>
+            </article>
+        </div>
+
+        <div class="mt-14 flex items-center gap-3 text-wc-muted" aria-hidden="true">
+            <div class="trionda-triangle opacity-60"></div>
+            <span class="text-xs uppercase tracking-[0.3em]">{{ request.state._("Trionda spirit") }}</span>
+            <div class="trionda-triangle opacity-60"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

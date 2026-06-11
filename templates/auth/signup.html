@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ request.state._("Sign up") }} — {{ app_name }}{% endblock %}
+{% block body_class %}wc-pattern{% endblock %}
+{% block header_nav %}{% endblock %}
+{% block header_auth %}
+<a href="/login" class="min-h-11 inline-flex items-center justify-center rounded-lg px-3 text-sm font-semibold text-wc-gold-bright hover:bg-white/5">
+    {{ request.state._("Log in") }}
+</a>
+{% endblock %}
+
+{% block main_class %}flex flex-1 flex-col items-center justify-center px-4 py-6{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-[20rem]">
+    <div class="wc-card wc-card-gold rounded-xl p-5">
+        <div class="mb-5 text-center">
+            <div class="triad-stripe mx-auto mb-4 h-1 w-10 rounded-full" aria-hidden="true"></div>
+            <h1 class="font-display text-xl font-bold uppercase tracking-tight text-white">
+                {{ request.state._("Sign up") }}
+            </h1>
+            <p class="mt-1.5 text-xs leading-relaxed text-wc-muted">
+                {{ request.state._("Create your account and join the 2026 pool.") }}
+            </p>
+        </div>
+
+        {% if auth_message %}
+        <div class="mb-4 rounded-lg border border-wc-gold/30 bg-wc-gold/10 px-3 py-2 text-xs text-wc-gold-bright" role="status">
+            {{ auth_message }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/signup" class="flex flex-col gap-3">
+            <div>
+                <label for="display_name" class="mb-1 block text-xs font-medium text-wc-muted">
+                    {{ request.state._("Display name") }}
+                </label>
+                <input
+                    type="text"
+                    id="display_name"
+                    name="display_name"
+                    autocomplete="name"
+                    required
+                    maxlength="100"
+                    class="wc-input h-10 w-full rounded-lg px-3 text-sm"
+                    placeholder="{{ request.state._('How friends will see you') }}"
+                >
+            </div>
+            <div>
+                <label for="username" class="mb-1 block text-xs font-medium text-wc-muted">
+                    {{ request.state._("Username") }}
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    autocomplete="username"
+                    required
+                    maxlength="50"
+                    class="wc-input h-10 w-full rounded-lg px-3 text-sm"
+                    placeholder="{{ request.state._('Choose a username') }}"
+                >
+            </div>
+            <div>
+                <label for="password" class="mb-1 block text-xs font-medium text-wc-muted">
+                    {{ request.state._("Password") }}
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="new-password"
+                    required
+                    minlength="8"
+                    class="wc-input h-10 w-full rounded-lg px-3 text-sm"
+                    placeholder="{{ request.state._('At least 8 characters') }}"
+                >
+            </div>
+            <div>
+                <label for="password_confirm" class="mb-1 block text-xs font-medium text-wc-muted">
+                    {{ request.state._("Confirm password") }}
+                </label>
+                <input
+                    type="password"
+                    id="password_confirm"
+                    name="password_confirm"
+                    autocomplete="new-password"
+                    required
+                    minlength="8"
+                    class="wc-input h-10 w-full rounded-lg px-3 text-sm"
+                    placeholder="{{ request.state._('Repeat your password') }}"
+                >
+            </div>
+            <button type="submit" class="wc-btn-primary mt-1 h-10 w-full rounded-lg text-sm font-bold">
+                {{ request.state._("Create account") }}
+            </button>
+        </form>
+
+        <p class="mt-4 text-center text-xs text-wc-muted">
+            {{ request.state._("Already have an account?") }}
+            <a href="/login" class="font-semibold text-wc-gold-bright hover:underline">
+                {{ request.state._("Log in") }}
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

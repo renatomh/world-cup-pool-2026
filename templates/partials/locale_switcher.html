@@ -1,0 +1,10 @@
+<div class="flex gap-1">
+    {% for locale in locales %}
+    <a
+        href="{{ locale_href_base }}{% if '?' in locale_href_base %}&{% else %}?{% endif %}lang={{ locale }}"
+        class="min-h-11 min-w-11 inline-flex items-center justify-center rounded-md px-2 text-xs font-semibold uppercase tracking-wide {% if request.state.locale == locale %}bg-wc-gold/20 text-wc-gold-bright ring-1 ring-wc-gold/40{% else %}text-wc-muted hover:bg-white/5{% endif %}"
+    >
+        {{ locale }}
+    </a>
+    {% endfor %}
+</div>

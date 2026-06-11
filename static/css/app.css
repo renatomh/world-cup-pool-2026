@@ -1,1 +1,159 @@
-/* App-specific styles beyond Tailwind CDN defaults */
+/* FIFA World Cup 2026 — Trionda triad theme */
+
+:root {
+    --wc-red: #c8102e;
+    --wc-green: #006847;
+    --wc-blue: #041e42;
+    --wc-gold: #c5a572;
+    --wc-gold-bright: #e8c872;
+    --wc-night: #07080d;
+    --wc-night-soft: #10131c;
+    --wc-surface: #141824;
+    --wc-surface-elevated: #1c2233;
+    --wc-text: #f4f5f7;
+    --wc-text-muted: #9aa3b5;
+    --wc-border: rgba(197, 165, 114, 0.22);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Barlow", system-ui, sans-serif;
+    background-color: var(--wc-night);
+    color: var(--wc-text);
+}
+
+.font-display {
+    font-family: "Barlow Condensed", system-ui, sans-serif;
+}
+
+/* Trionda triad stripe */
+.triad-stripe {
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--wc-red) 0%,
+        var(--wc-red) 33.33%,
+        var(--wc-green) 33.33%,
+        var(--wc-green) 66.66%,
+        var(--wc-blue) 66.66%,
+        var(--wc-blue) 100%
+    );
+}
+
+/* Host-nation gradient accents */
+.triad-gradient {
+    background: linear-gradient(135deg, var(--wc-red) 0%, var(--wc-green) 50%, var(--wc-blue) 100%);
+}
+
+.triad-text {
+    background: linear-gradient(90deg, #ff4d6d 0%, #3dd68c 50%, #5b8cff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Geometric pitch pattern (inspired by WC26 emblem shapes) */
+.wc-pattern {
+    background-color: var(--wc-night);
+    background-image:
+        linear-gradient(rgba(197, 165, 114, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197, 165, 114, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+}
+
+.wc-hero-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.wc-hero-glow::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20%;
+    background:
+        radial-gradient(ellipse at 20% 40%, rgba(200, 16, 46, 0.35) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 30%, rgba(0, 104, 71, 0.28) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(4, 30, 66, 0.45) 0%, transparent 55%);
+    pointer-events: none;
+}
+
+.wc-card {
+    background: linear-gradient(160deg, rgba(28, 34, 51, 0.95) 0%, rgba(16, 19, 28, 0.98) 100%);
+    border: 1px solid var(--wc-border);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+        0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.wc-card-gold {
+    border-color: rgba(197, 165, 114, 0.35);
+}
+
+.wc-btn-primary {
+    background: linear-gradient(135deg, var(--wc-gold) 0%, var(--wc-gold-bright) 100%);
+    color: var(--wc-night);
+    font-weight: 700;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.wc-btn-primary:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 8px 24px rgba(197, 165, 114, 0.35);
+}
+
+.wc-btn-primary:active {
+    transform: scale(0.98);
+}
+
+.wc-btn-outline {
+    border: 1px solid rgba(197, 165, 114, 0.45);
+    color: var(--wc-gold-bright);
+    background: rgba(197, 165, 114, 0.06);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.wc-btn-outline:hover {
+    background: rgba(197, 165, 114, 0.12);
+    border-color: rgba(197, 165, 114, 0.65);
+}
+
+.wc-input {
+    background: rgba(7, 8, 13, 0.65);
+    border: 1px solid rgba(154, 163, 181, 0.25);
+    color: var(--wc-text);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wc-input:focus {
+    outline: none;
+    border-color: rgba(197, 165, 114, 0.65);
+    box-shadow: 0 0 0 3px rgba(197, 165, 114, 0.15);
+}
+
+.wc-input::placeholder {
+    color: var(--wc-text-muted);
+}
+
+.wc-trophy-mark {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(145deg, var(--wc-gold) 0%, #8a6d3f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 20px rgba(197, 165, 114, 0.3);
+}
+
+/* Trionda triangle decoration */
+.trionda-triangle {
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 24px solid rgba(197, 165, 114, 0.5);
+}

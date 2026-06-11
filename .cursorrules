@@ -10,6 +10,20 @@ You are an expert senior full-stack developer specializing in Python, FastAPI, P
 2. **No Thick Clients / SPAs**: For the web frontend, do not suggest heavy JS frameworks. Interface state is driven by backend hypermedia exchanges.
 3. **Infrastructure Simplicity**: The entire stack (FastAPI, PostgreSQL, Redis) will run via Docker Compose on a single AWS EC2 instance. Keep resource utilization lean.
 
+## Authentication
+
+1. **JWT access + refresh tokens**: Sign all tokens with HS256 and `SECRET_KEY`. Every token carries a unique `jti` claim.
+   - **Access tokens**: Short-lived (default 1 hour). Used for API calls and web middleware auth.
+   - **Refresh tokens**: Long-lived (default 7 days). Used only to obtain new token pairs via `POST /api/v1/auth/refresh`.
+2. **Token delivery**:
+   - **REST / mobile**: Return `access_token`, `refresh_token`, and `token_type: bearer` in JSON (`AuthResponse`). Send access tokens as `Authorization: Bearer <token>`.
+   - **Web (HTMX)**: Also set both tokens in HttpOnly cookies (`JWT_COOKIE_NAME`, `JWT_REFRESH_COOKIE_NAME`) so browser navigations work without JavaScript.
+3. **Revocation (Redis blacklist)**: On logout or refresh rotation, blacklist the token's `jti` in Redis with TTL equal to remaining token lifetime. Reject blacklisted tokens during decode.
+4. **Protected routes**: Resolve the user from the access token (Bearer header or access cookie) via middleware (`request.state.user`) and `get_current_user` for API routes. Never accept refresh tokens for protected resources.
+5. **Refresh rotation**: Each refresh revokes the old refresh token and issues a new access + refresh pair.
+6. **Passwords**: Hash with bcrypt; never store or return plaintext passwords.
+7. **Roles**: Users have a `role` column (`user` or `admin` via `UserRole`). Public signup always creates `user`. Never accept `role` from signup/login payloads—promote admins via DB seed, migration, or a protected admin-only endpoint. Use `get_current_admin` for admin routes.
+
 ## Docker & Dependencies
 
 1. **Split requirements**: `requirements.txt` holds **runtime-only** dependencies (what the app needs in production). `requirements-dev.txt` includes test and local-dev tools (`pytest`, `httpx`, etc.) via `-r requirements.txt`. The `Dockerfile` must install only `requirements.txt`.

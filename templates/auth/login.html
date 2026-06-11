@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ request.state._("Log in") }} — {{ app_name }}{% endblock %}
+{% block body_class %}wc-pattern{% endblock %}
+{% block header_nav %}{% endblock %}
+{% block header_auth %}
+<a href="/signup" class="wc-btn-outline min-h-11 inline-flex items-center justify-center rounded-lg px-4 text-sm font-semibold">
+    {{ request.state._("Sign up") }}
+</a>
+{% endblock %}
+
+{% block main_class %}flex flex-1 flex-col items-center justify-center px-4 py-6{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-[20rem]">
+    <div class="wc-card wc-card-gold rounded-xl p-5">
+        <div class="mb-5 text-center">
+            <div class="triad-stripe mx-auto mb-4 h-1 w-10 rounded-full" aria-hidden="true"></div>
+            <h1 class="font-display text-xl font-bold uppercase tracking-tight text-white">
+                {{ request.state._("Log in") }}
+            </h1>
+            <p class="mt-1.5 text-xs leading-relaxed text-wc-muted">
+                {{ request.state._("Enter your credentials to access your predictions.") }}
+            </p>
+        </div>
+
+        {% if auth_message %}
+        <div class="mb-4 rounded-lg border border-wc-gold/30 bg-wc-gold/10 px-3 py-2 text-xs text-wc-gold-bright" role="status">
+            {{ auth_message }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/login" class="flex flex-col gap-3">
+            <div>
+                <label for="username" class="mb-1 block text-xs font-medium text-wc-muted">
+                    {{ request.state._("Username") }}
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    autocomplete="username"
+                    required
+                    class="wc-input h-10 w-full rounded-lg px-3 text-sm"
+                    placeholder="{{ request.state._('Your username') }}"
+                >
+            </div>
+            <div>
+                <label for="password" class="mb-1 block text-xs font-medium text-wc-muted">
+                    {{ request.state._("Password") }}
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="current-password"
+                    required
+                    class="wc-input h-10 w-full rounded-lg px-3 text-sm"
+                    placeholder="••••••••"
+                >
+            </div>
+            <button type="submit" class="wc-btn-primary mt-1 h-10 w-full rounded-lg text-sm font-bold">
+                {{ request.state._("Log in") }}
+            </button>
+        </form>
+
+        <p class="mt-4 text-center text-xs text-wc-muted">
+            {{ request.state._("No account yet?") }}
+            <a href="/signup" class="font-semibold text-wc-gold-bright hover:underline">
+                {{ request.state._("Create one") }}
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

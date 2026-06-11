@@ -23,8 +23,13 @@ class Settings(BaseSettings):
 
     bet_lock_minutes_before_kickoff: int = 15
 
-    session_cookie_secure: bool = False
-    session_cookie_httponly: bool = True
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_seconds: int = 60 * 60
+    jwt_refresh_token_expire_seconds: int = 60 * 60 * 24 * 7
+    jwt_cookie_name: str = "wc_pool_access_token"
+    jwt_refresh_cookie_name: str = "wc_pool_refresh_token"
+    jwt_cookie_secure: bool = False
+    jwt_cookie_httponly: bool = True
 
     @property
     def locale_list(self) -> list[str]:
