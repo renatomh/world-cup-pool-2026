@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     jwt_cookie_secure: bool = False
     jwt_cookie_httponly: bool = True
 
+    seed_admin_username: str = "admin"
+    seed_admin_password: str = "admin12345"
+    seed_user_username: str = "demo"
+    seed_user_password: str = "demo12345"
+
     @property
     def locale_list(self) -> list[str]:
         return [locale.strip() for locale in self.supported_locales.split(",") if locale.strip()]

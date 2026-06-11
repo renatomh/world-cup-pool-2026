@@ -73,6 +73,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Save Bet": "Save Bet",
         "API": "API",
         "Health": "Health",
+        "Admin": "Admin",
+        "Group": "Group",
+        "Match day": "Match day",
+        "Match day navigation": "Match day navigation",
+        "Previous day": "Previous day",
+        "Next day": "Next day",
+        "No matches on this day.": "No matches on this day.",
     },
     "pt_BR": {
         "World Cup Pool 2026": "Bolão Copa do Mundo 2026",
@@ -144,6 +151,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Save Bet": "Salvar Palpite",
         "API": "API",
         "Health": "Status",
+        "Admin": "Administração",
+        "Group": "Grupo",
+        "Match day": "Dia de jogos",
+        "Match day navigation": "Navegação por dia",
+        "Previous day": "Dia anterior",
+        "Next day": "Próximo dia",
+        "No matches on this day.": "Nenhum jogo neste dia.",
     },
 }
 

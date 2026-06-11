@@ -4,15 +4,9 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from app.config import Settings
 from app.dependencies import get_app_settings, get_request_translator
 from app.templates import templates
+from app.web.common import page_context
 
 router = APIRouter(tags=["web"])
-
-
-def _page_context(settings: Settings) -> dict:
-    return {
-        "app_name": settings.app_name,
-        "locales": settings.locale_list,
-    }
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -24,7 +18,7 @@ def landing(
     return templates.TemplateResponse(
         request,
         "landing.html",
-        _page_context(settings),
+        page_context(settings),
     )
 
 
@@ -39,5 +33,5 @@ def home(
     return templates.TemplateResponse(
         request,
         "home.html",
-        _page_context(settings),
+        page_context(settings),
     )

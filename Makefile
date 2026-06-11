@@ -1,4 +1,4 @@
-.PHONY: help install dev run test \
+.PHONY: help install dev run test seed \
         up up-build build down logs ps restart \
         db redis infra \
         migrate migration downgrade db-reset \
@@ -35,6 +35,7 @@ help: ## Show available commands
 	@echo   env                Copy .env.example to .env when missing
 	@echo   run                Run FastAPI with hot reload (local venv)
 	@echo   test               Run pytest
+	@echo   seed               Load sample teams, matches, and users
 	@echo.
 	@echo Docker Compose:
 	@echo   up                 Start all services (detached)
@@ -79,6 +80,9 @@ run: ## Run FastAPI with hot reload (requires local venv + .env)
 
 test: ## Run pytest
 	$(VENV_PYTEST)
+
+seed: ## Load sample teams, matches, and users
+	$(VENV_PYTHON) -m app.cli.seed
 
 # --- Docker Compose (full stack) ----------------------------------------------
 

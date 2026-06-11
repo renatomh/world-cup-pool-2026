@@ -1,0 +1,48 @@
+<div id="match-day">
+    <nav class="wc-card flex items-center justify-between gap-3 rounded-2xl p-3 sm:p-4" aria-label="{{ request.state._('Match day navigation') }}">
+        {% if prev_date %}
+        <a href="/matches?date={{ prev_date.isoformat() }}"
+           hx-get="/matches/day?date={{ prev_date.isoformat() }}"
+           hx-target="#match-day"
+           hx-swap="outerHTML"
+           hx-push-url="/matches?date={{ prev_date.isoformat() }}"
+           class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 px-3 text-sm font-semibold text-wc-gold hover:bg-white/5">
+            <span aria-hidden="true">←</span>
+            <span class="sr-only">{{ request.state._("Previous day") }}</span>
+        </a>
+        {% else %}
+        <span class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/5 px-3 text-sm text-wc-muted/40" aria-hidden="true">←</span>
+        {% endif %}
+
+        <div class="text-center">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-wc-gold">{{ request.state._("Match day") }}</p>
+            <p class="mt-1 font-display text-lg font-bold uppercase text-white sm:text-xl">{{ selected_date_display }}</p>
+        </div>
+
+        {% if next_date %}
+        <a href="/matches?date={{ next_date.isoformat() }}"
+           hx-get="/matches/day?date={{ next_date.isoformat() }}"
+           hx-target="#match-day"
+           hx-swap="outerHTML"
+           hx-push-url="/matches?date={{ next_date.isoformat() }}"
+           class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 px-3 text-sm font-semibold text-wc-gold hover:bg-white/5">
+            <span aria-hidden="true">→</span>
+            <span class="sr-only">{{ request.state._("Next day") }}</span>
+        </a>
+        {% else %}
+        <span class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/5 px-3 text-sm text-wc-muted/40" aria-hidden="true">→</span>
+        {% endif %}
+    </nav>
+
+    <div class="mt-4 space-y-4">
+        {% if matches %}
+            {% for match in matches %}
+            {% include "partials/match_card.html" %}
+            {% endfor %}
+        {% else %}
+        <section class="wc-card rounded-2xl p-6 text-center">
+            <p class="text-sm text-wc-muted">{{ request.state._("No matches on this day.") }}</p>
+        </section>
+        {% endif %}
+    </div>
+</div>

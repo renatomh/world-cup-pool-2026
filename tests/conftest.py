@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 import app.core.token_blacklist as token_blacklist_module
+import app.database as database
 from app.database import get_db
 from app.main import app
 from app.models import Base
@@ -44,6 +45,15 @@ def test_environment(monkeypatch):
 @pytest.fixture
 def client() -> TestClient:
     return TestClient(app)
+
+
+@pytest.fixture
+def db_session():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @pytest.fixture

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body_class %}wc-pattern{% endblock %}
+
+{% block content %}
+<section class="wc-card rounded-2xl p-8 sm:p-12">
+    <h1 class="font-display text-4xl font-extrabold uppercase tracking-tight text-white sm:text-5xl">
+        {{ request.state._("Leaderboard") }}
+    </h1>
+    <p class="mt-4 max-w-xl text-wc-muted">
+        {{ request.state._("Rankings update after each final whistle.") }}
+    </p>
+    <p class="mt-8 rounded-xl border border-white/5 bg-black/20 px-4 py-6 text-center text-sm text-wc-muted">
+        {{ request.state._("Coming soon") }}
+    </p>
+</section>
+{% endblock %}

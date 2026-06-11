@@ -52,12 +52,17 @@
                 <a href="/home" class="hidden min-h-11 items-center justify-center rounded-lg px-3 text-sm font-medium text-wc-muted hover:bg-white/5 hover:text-white sm:inline-flex">
                     {{ request.state._("Home") }}
                 </a>
-                <a href="/home#matches" class="hidden min-h-11 items-center justify-center rounded-lg px-3 text-sm font-medium text-wc-muted hover:bg-white/5 hover:text-white sm:inline-flex">
+                <a href="/matches" class="hidden min-h-11 items-center justify-center rounded-lg px-3 text-sm font-medium text-wc-muted hover:bg-white/5 hover:text-white sm:inline-flex">
                     {{ request.state._("Matches") }}
                 </a>
-                <a href="/home#leaderboard" class="hidden min-h-11 items-center justify-center rounded-lg px-3 text-sm font-medium text-wc-muted hover:bg-white/5 hover:text-white sm:inline-flex">
+                <a href="/leaderboard" class="hidden min-h-11 items-center justify-center rounded-lg px-3 text-sm font-medium text-wc-muted hover:bg-white/5 hover:text-white sm:inline-flex">
                     {{ request.state._("Leaderboard") }}
                 </a>
+                {% if request.state.user and request.state.user.role == "admin" %}
+                <a href="/admin" class="hidden min-h-11 items-center justify-center rounded-lg px-3 text-sm font-medium text-wc-gold hover:bg-white/5 hover:text-wc-gold-bright sm:inline-flex">
+                    {{ request.state._("Admin") }}
+                </a>
+                {% endif %}
                 {% endblock %}
 
                 {% block header_auth %}
