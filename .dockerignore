@@ -1,0 +1,41 @@
+# Git & IDE
+.git
+.gitignore
+.gitattributes
+.idea
+.vscode
+.cursorrules
+
+# Python local environment
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+.tox
+.hypothesis
+
+# Dev-only files (not needed in the runtime image)
+tests
+pytest.ini
+requirements-dev.txt
+
+# Secrets & local config
+.env
+.env.*
+!.env.example
+
+# Docs & compose (not needed inside the image)
+README.md
+docker-compose.yml
+docker-compose.override.yml
+
+# OS junk
+.DS_Store
+Thumbs.db

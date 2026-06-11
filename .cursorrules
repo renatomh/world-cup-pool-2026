@@ -10,11 +10,17 @@ You are an expert senior full-stack developer specializing in Python, FastAPI, P
 2. **No Thick Clients / SPAs**: For the web frontend, do not suggest heavy JS frameworks. Interface state is driven by backend hypermedia exchanges.
 3. **Infrastructure Simplicity**: The entire stack (FastAPI, PostgreSQL, Redis) will run via Docker Compose on a single AWS EC2 instance. Keep resource utilization lean.
 
+## Docker & Dependencies
+
+1. **Split requirements**: `requirements.txt` holds **runtime-only** dependencies (what the app needs in production). `requirements-dev.txt` includes test and local-dev tools (`pytest`, `httpx`, etc.) via `-r requirements.txt`. The `Dockerfile` must install only `requirements.txt`.
+2. **`.dockerignore`**: Keep the build context lean. Exclude `tests/`, `.venv/`, `.pytest_cache/`, `requirements-dev.txt`, `.env`, `.git`, and other dev-only artifacts so they are not copied into the image.
+3. **Dev bind mounts**: `docker-compose.yml` may mount the repo for hot-reload; that is fine for local development. Production images must still be built from a slim context without dev dependencies installed.
+
 ## Coding & Style Guidelines
 
 1. **Anti-Overengineering Rule**: Write clean, linear, and readable code. **Do not create trivial helper functions** that are only called once. Avoid deeply nested abstractions that obfuscate intent or hinder human readability.
 2. **Concise Docstrings**: Keep docstrings short, direct, and purposeful. Do not generate verbose, repetitive, or boilerplate documentation blocks.
-3. **Database & Migrations**: Use PostgreSQL with SQLAlchemy for data persistence. All schema changes must be managed via Alembic migrations. Do not suggest raw SQL strings or automatic table creation in production code.
+3. **Database & Migrations**: Use PostgreSQL with SQLAlchemy for data persistence. All schema changes must be managed via Alembic migrations. Do not suggest raw SQL strings or automatic table creation in production code. Use **UUID v4** (`uuid.uuid4`) for all primary keys and foreign keys via `UuidPrimaryKeyMixin` and `Uuid(as_uuid=True)` columns—not auto-increment integers.
 
 ## Testing Guidelines
 
@@ -71,7 +77,7 @@ Follow this strict separation between Hypermedia (HTMX) and REST endpoints:
 # --- HYPERMEDIA ROUTE (Web App Frontend) ---
 @router.post("/matches/{match_id}/bet", response_class=HTMLResponse)
 async def save_match_bet_html(
-    match_id: int, 
+    match_id: UUID, 
     request: Request, 
     home_score: int = Form(...), 
     away_score: int = Form(...),
@@ -95,7 +101,7 @@ async def save_match_bet_html(
 # --- REST API ROUTE (Future Mobile App) ---
 @router.post("/api/v1/matches/{match_id}/bets", response_model=BetOutSchema)
 async def save_match_bet_api(
-    match_id: int, 
+    match_id: UUID, 
     bet_in: BetInSchema, 
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
