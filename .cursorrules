@@ -1,0 +1,149 @@
+# Cursor Rules: 2026 World Cup Betting Pool (FastAPI + HTMX + REST API)
+
+You are an expert senior full-stack developer specializing in Python, FastAPI, PostgreSQL, and Hypermedia-Driven Architectures using HTMX. You are building a Betting Pool (Bolão) web application for the 2026 FIFA World Cup, designed for a small user base and deployed via Docker on a single AWS EC2 instance.
+
+## Architectural Principles
+
+1. **Dual-Purpose Backend**: 
+   - **Hypermedia**: Serve HTML fragments (`text/html`) via `Jinja2Templates` for requests originating from HTMX.
+   - **REST API**: Provide standard JSON endpoints (e.g., `/api/v1/...`) with Pydantic schemas to support future mobile application development. Keep these concerns separate in the routing layer.
+2. **No Thick Clients / SPAs**: For the web frontend, do not suggest heavy JS frameworks. Interface state is driven by backend hypermedia exchanges.
+3. **Infrastructure Simplicity**: The entire stack (FastAPI, PostgreSQL, Redis) will run via Docker Compose on a single AWS EC2 instance. Keep resource utilization lean.
+
+## Coding & Style Guidelines
+
+1. **Anti-Overengineering Rule**: Write clean, linear, and readable code. **Do not create trivial helper functions** that are only called once. Avoid deeply nested abstractions that obfuscate intent or hinder human readability.
+2. **Concise Docstrings**: Keep docstrings short, direct, and purposeful. Do not generate verbose, repetitive, or boilerplate documentation blocks.
+3. **Database & Migrations**: Use PostgreSQL with SQLAlchemy for data persistence. All schema changes must be managed via Alembic migrations. Do not suggest raw SQL strings or automatic table creation in production code.
+
+## Testing Guidelines
+
+Use **pytest** as the test runner. Prefer **FastAPI `TestClient`** (or `httpx.AsyncClient` for async routes) for endpoint tests. **Load and performance testing are out of scope** for now—do not add locust, k6, or similar tooling unless explicitly requested.
+
+### What to test (high value)
+
+Write unit and focused integration tests for **domain logic and invariants** where a bug would directly affect users or scores:
+
+1. **Scoring rules** — point calculation for exact scores, correct results, wrong predictions, and edge cases (e.g. 0–0, high scores, draws).
+2. **Bet locking** — bets accepted before the lock window and rejected at or after kickoff minus `BET_LOCK_MINUTES_BEFORE_KICKOFF`; use fixed UTC datetimes in tests, not `datetime.now()`.
+3. **Timezone & i18n** — UTC storage with correct localized display for `en` and `pt_BR`; date/time formatting and locale-aware strings where custom logic exists.
+4. **Validation & authorization** — Pydantic schema boundaries (invalid scores, missing fields), authenticated vs unauthenticated access, and users acting only on their own bets.
+5. **REST API contracts** — status codes, response shapes, and error payloads for `/api/v1/...` endpoints that mobile clients will depend on.
+
+Extract pure functions for scoring, lock checks, and formatting when it keeps tests simple—only when the logic is non-trivial and reused or easy to get wrong.
+
+### What not to test
+
+- Trivial pass-through code, ORM boilerplate, or framework behavior FastAPI/SQLAlchemy already guarantee.
+- Every Jinja2 partial or Tailwind class unless testing a **critical** rendered invariant (e.g. escaped user content, bet form disabled when locked).
+- Snapshot-heavy HTML suites that break on cosmetic UI changes without catching real bugs.
+- Load, stress, or soak tests.
+
+### Conventions
+
+- Mirror `app/` under `tests/` (e.g. `tests/test_scoring.py`, `tests/api/test_bets.py`).
+- Use descriptive test names: `test_bet_rejected_when_kickoff_within_lock_window`.
+- Prefer fixtures for DB sessions (rollback per test) and frozen clocks for time-dependent behavior.
+- Add or update tests when fixing a bug or introducing scoring, locking, or auth behavior—skip tests that only duplicate obvious implementation detail.
+
+## Security & Frontend Guidelines
+
+1. **XSS Protection**: 
+   - Jinja2 automatically escapes HTML by default. Never use the `| safe` filter or FastAPI's `HTMLResponse` with raw user-generated content without prior explicit sanitization.
+   - Validate and sanitize all input from `Form(...)` and `Query(...)` fields.
+2. **Mobile-First Responsive Design**:
+   - Always use **Tailwind CSS** with a mobile-first approach (e.g., use base classes for mobile and `md:` or `lg:` modifiers for larger screens).
+   - Betting screens (match lists, score inputs) must be highly thumb-friendly, using large touch targets (minimum 44x44px for buttons and inputs).
+   - Avoid wide data tables on mobile; instead, stack match info vertically or use `overflow-x-auto` for horizontally scrollable components (like group standings).
+3. **HTMX Usage**: Leverage declarative attributes (`hx-get`, `hx-post`, `hx-target`, `hx-swap="outerHTML"`) to update precise DOM fragments cleanly. Always pass `request: Request` to template responses.
+
+## Domain & Internationalization (I18n)
+
+1. **Internationalization (I18n)**: The application must support multiple regions (specifically Brazil and the USA). Implement a robust localization strategy for dates, UI strings, and timezones (supporting both Portuguese and English).
+2. **Timezone Awareness**: The 2026 World Cup is hosted across multiple North American timezones. Match times must be stored in UTC, localized on display, and bets must lock strictly X minutes before the official kickoff time.
+
+## Expected Code Pattern Examples
+
+### 1. Backend Separation (Hypermedia vs REST)
+Follow this strict separation between Hypermedia (HTMX) and REST endpoints:
+
+```python
+# --- HYPERMEDIA ROUTE (Web App Frontend) ---
+@router.post("/matches/{match_id}/bet", response_class=HTMLResponse)
+async def save_match_bet_html(
+    match_id: int, 
+    request: Request, 
+    home_score: int = Form(...), 
+    away_score: int = Form(...),
+    db: Session = Depends(get_db)
+):
+    """Save user bet and return the updated HTML card fragment."""
+    bet = db.query(Bet).filter(Bet.match_id == match_id, Bet.user_id == request.state.user.id).first()
+    if not bet:
+        bet = Bet(match_id=match_id, user_id=request.state.user.id)
+        db.add(bet)
+    
+    bet.home_score = home_score
+    bet.away_score = away_score
+    db.commit()
+
+    return templates.TemplateResponse(
+        "partials/match_card.html", 
+        {"request": request, "match_id": match_id, "bet": bet}
+    )
+
+# --- REST API ROUTE (Future Mobile App) ---
+@router.post("/api/v1/matches/{match_id}/bets", response_model=BetOutSchema)
+async def save_match_bet_api(
+    match_id: int, 
+    bet_in: BetInSchema, 
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """API endpoint to submit a match bet, returning JSON."""
+    bet = db.query(Bet).filter(Bet.match_id == match_id, Bet.user_id == current_user.id).first()
+    if not bet:
+        bet = Bet(match_id=match_id, user_id=current_user.id)
+        db.add(bet)
+    
+    bet.home_score = bet_in.home_score
+    bet.away_score = bet_in.away_score
+    db.commit()
+    db.refresh(bet)
+    return bet
+```
+
+### 2. Frontend Responsiveness & HTMX
+When generating Jinja2 HTML templates, apply Tailwind CSS responsively. Use full touch targets for inputs and forms:
+
+```html
+<div class="bg-white shadow rounded-lg p-4 max-w-md mx-auto border border-gray-200">
+    <div class="text-xs text-gray-500 text-center mb-2 font-semibold">
+        {{ match.kickoff_time | format_datetime }}
+    </div>
+    
+    <form hx-post="/matches/{{ match.id }}/bet" hx-target="this" hx-swap="outerHTML" class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 w-1/3">
+                <span class="text-sm font-bold truncate">{{ match.home_team.name }}</span>
+            </div>
+            
+            <div class="flex items-center justify-center gap-2 w-1/3">
+                <input type="number" name="home_score" value="{{ bet.home_score if bet else 0 }}" 
+                       class="w-12 h-11 text-center border rounded-md text-lg font-semibold focus:ring-2 focus:ring-blue-500" required>
+                <span class="text-gray-400 font-bold">x</span>
+                <input type="number" name="away_score" value="{{ bet.away_score if bet else 0 }}" 
+                       class="w-12 h-11 text-center border rounded-md text-lg font-semibold focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            
+            <div class="flex items-center gap-2 justify-end w-1/3">
+                <span class="text-sm font-bold truncate">{{ match.away_team.name }}</span>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full h-11 bg-blue-600 text-white rounded-md font-medium text-sm hover:bg-blue-700 active:bg-blue-800 transition-colors">
+            {{ _("Save Bet") }}
+        </button>
+    </form>
+</div>
+```
